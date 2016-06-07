@@ -8,7 +8,7 @@
 
 // ROOT include(s):
 #include <TBits.h>
-
+#include "TMatrixD.h"
 // External include(s):
 #include "../NtupleVariables/include/JetNtupleObject.h"
 #include "../NtupleVariables/include/Jet.h"
@@ -26,6 +26,7 @@
 #include "../GoodRunsLists/include/TGoodRunsList.h"
 #include "../PileupReweightingTool/include/PileupReweightingTool.h"
 #include "../BTaggingTools/include/BTaggingScaleTool.h"
+#include "../SVFit/include/NSVfitStandaloneAlgorithm.h"
 
 class TH1D;
 class TH2D;
@@ -115,14 +116,20 @@ public:
    
    /// Function to book histograms
    virtual void bookHistograms( const TString& directory );
-   
+    
   /// Function to book histograms for trigger choice
   virtual void bookTriggerHistos(const TString& directory );
-  virtual void checkTrigger(const TString& directory );
+  virtual void checkTrigger(const TString& directory ,const std::string& channel);
+  virtual void checkTriggerTurnOn();
+  virtual void checkTriggerOfflineSelection(const TString& directory,  const UZH::Jet& Jet,const UZH::Tau& tau,const  TLorentzVector& lepton ,const  bool& ID , const  double& leptonIso,  const UZH::MissingEt& met,const std::string& channel ,const  double& HT );
  
-
-   /// Function to fill histograms
-   virtual void fillHistograms( const TString& directory, const UZH::Jet& vectorJet, const UZH::Jet& higgsJet, const TLorentzVector& diJet, const double& vJet_tau21, const double& vJet_tau31, const double& vJet_tau32, const int& vJet_nTaggedSubjets, const double& vJet_subjet0_csv, const double& vJet_subjet1_csv, const double& hJet_tau21, const double& hJet_tau31, const double& hJet_tau32, const int& hJet_nTaggedSubjets, const double& hJet_subjet0_csv, const double& hJet_subjet1_csv, const double& deta, const double& dphi, const double& dr );
+  /// Function to book tree branches
+  virtual void FillBranches(const std::string& channel,  const UZH::Jet& Jet, const double& Jet_tau21, const double& Jet_tau31, const double& Jet_tau32, const int& Jet_nTaggedSubjets, const double& Jet_subjet0_csv, const double& Jet_subjet1_csv, const double& ak8jet0_subjet01_dr,  const double& ak8jet0_subjet01_deta, const double& ak8jet0_subjet01_dphi, const double& b_weight, const double& b_weightGen,  const double& b_weightPU, const double& b_weightBtag,  const double& b_weightBtag_veto,  const double& b_runNumber, const double& b_eventNumber,const double& b_lumiBlock,  const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
+  
+  virtual void passTrigger_branches(const std::string& channel);
+  
+  /// Function to fill histograms
+  virtual void fillHistograms( const TString& directory, const UZH::Jet& vectorJet, const UZH::Jet& higgsJet, const TLorentzVector& diJet, const double& vJet_tau21, const double& vJet_tau31, const double& vJet_tau32, const int& vJet_nTaggedSubjets, const double& vJet_subjet0_csv, const double& vJet_subjet1_csv, const double& hJet_tau21, const double& hJet_tau31, const double& hJet_tau32, const int& hJet_nTaggedSubjets, const double& hJet_subjet0_csv, const double& hJet_subjet1_csv, const double& deta, const double& dphi, const double& dr );
 
 private:
    //
@@ -148,13 +155,19 @@ private:
   Root::TGoodRunsList m_grl;
   PileupReweightingTool m_pileupReweightingTool;
   BTaggingScaleTool m_bTaggingScaleTool;
-  
+
+  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+
   //
   // XML settings for VHAnalysis
   //
   // naming
   std::string m_recoTreeName;       ///< name of tree with reconstructed objects in ntuple
   std::string m_outputTreeName;    ///< name of output tree
+  std::vector<std::string> m_outputTreeName_ch_; ///< name of output trees for analysis
+  std::vector<std::string> channels_;
+
   int m_ntupleLevel;               ///< cut at which branches for ntuple are written out
   std::string m_jetAK4Name;            ///< name of AK4 jet collection in tree with reconstructed objects
   std::string m_jetAK8Name;       ///< name of AK8 jet collection in tree with reconstructed objects
@@ -173,6 +186,8 @@ private:
   // jets
   double      m_jetPtCut;         ///< cut on jet pT
   double      m_jetEtaCut;        ///< cut on jet eta
+  double      m_AK4jetPtCut;         ///< cut on jet pT
+  double      m_AK4jetEtaCut;        ///< cut on jet eta
   double      m_mjjCut;           ///< cut on dijet mass
   double      m_jetDeltaEtaCut;   ///< cut on DeltaEta between selected jets
   // substructure cuts
@@ -216,6 +231,10 @@ private:
   std::vector<std::string> m_triggerNames;
   std::vector<std::string> m_catNames;
   
+  int taggedAK4_L;
+  int taggedAK4_M;
+  int taggedAK4_T;
+
   ///
   /// branches
   ///
@@ -223,6 +242,7 @@ private:
   double b_weightGen;
   double b_weightPU;
   double b_weightBtag;
+  double b_weightBtag_veto;
   
   // event variables
   int b_runNumber;
@@ -263,6 +283,145 @@ private:
   
   std::vector<Int_t>      b_selection_bits;
   std::vector<Int_t>      b_selection_lastcut;
+
+
+ // use flat variables for direct input in analysis framework 
+  /// branches
+  ///
+  std::map<std::string,Double_t> b_weight_;
+  std::map<std::string,Double_t> b_weightGen_;
+  std::map<std::string,Double_t> b_weightPU_;
+  std::map<std::string,Double_t> b_weightBtag_;
+  std::map<std::string,Double_t> b_weightBtag_veto_;
+  
+  // event variables
+  std::map<std::string,int> b_runNumber_;
+  std::map<std::string,int> b_eventNumber_;
+  std::map<std::string,int> b_lumiBlock_;
+
+  std::map<std::string,Double_t>   b_ak8jet0_pt_;
+  std::map<std::string,Double_t>   b_ak8jet0_phi_;
+  std::map<std::string,Double_t>   b_ak8jet0_eta_;
+  std::map<std::string,Double_t>   b_ak8jet0_e_;
+  std::map<std::string,Double_t>   b_ak8jet0_tau21_;
+  std::map<std::string,Double_t>   b_ak8jet0_m_;
+  std::map<std::string,Double_t>   b_ak8jet0_mpruned_;
+  std::map<std::string,Double_t>   b_ak8jet0_csv_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet01_dr_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet01_deta_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet01_dphi_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet0_pt_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet1_pt_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet0_csv_;
+  std::map<std::string,Double_t>   b_ak8jet0_subjet1_csv_;
+
+
+  std::map<std::string,Double_t> b_tau_pt_;
+  std::map<std::string,Double_t> b_tau_eta_;
+  std::map<std::string,Double_t> b_tau_phi_;
+  std::map<std::string,Double_t> b_tauIso_;
+  std::map<std::string,Double_t> b_tauIsoRaw_;
+  std::map<std::string,Double_t> b_tau_againstEle_;
+  std::map<std::string,Double_t> b_tau_againstMu_;
+
+  std::map<std::string,Double_t> b_seclepton_pt_;
+  std::map<std::string,Double_t> b_seclepton_eta_;
+  std::map<std::string,Double_t> b_seclepton_phi_;
+  std::map<std::string,Double_t> b_met_;
+  std::map<std::string,Double_t> b_met_phi_;
+  std::map<std::string,Double_t> b_vis_mass_ll_;
+  std::map<std::string,Double_t> b_dR_ll_;
+
+  std::map<std::string,Double_t> b_H_Mass_SVFit_;
+  std::map<std::string,Double_t> b_H_Pt_SVFit_;
+  std::map<std::string,Double_t> b_H_Eta_SVFit_;
+  std::map<std::string,Double_t> b_H_Phi_SVFit_;
+  std::map<std::string,Double_t> b_X_Mass_SVFit_;
+  std::map<std::string,Double_t> b_X_Pt_SVFit_;
+  std::map<std::string,Double_t> b_X_Eta_SVFit_;
+  std::map<std::string,Double_t> b_X_Phi_SVFit_;
+
+
+  std::map<std::string,std::vector<TBits>>      b_selection_bits_;
+  std::map<std::string,Int_t>      b_selection_lastcut_;
+
+  std::map<std::string,bool> b_trig_HT800_;
+  std::map<std::string,bool> b_trig_ak8Jet360_Trim30_;
+  std::map<std::string,bool> b_trig_Ele27_;
+  std::map<std::string,bool> b_trig_Ele23_;
+  std::map<std::string,bool> b_trig_Mu20_;
+  std::map<std::string,bool> b_trig_Mu18_;
+
+
+  std::map<std::string,int> b_N_taggedAK4_L_;
+  std::map<std::string,int> b_N_taggedAK4_M_;
+  std::map<std::string,int> b_N_taggedAK4_T_;
+  std::map<std::string,bool> b_isBoostedTau_;
+
+
+  ///
+  /// branches for ntuples for analysis
+  ///
+  double weight;
+  double weightGen;
+  double weightPU;
+  double weightBtag;
+  double weightBtag_veto;
+  
+  // event variables
+  int runNumber;
+  int eventNumber;
+  int lumiBlock;
+ 
+  Double_t   ak8jet0_pt;
+  Double_t   ak8jet0_phi;
+  Double_t   ak8jet0_eta;
+  Double_t   ak8jet0_e;
+  Double_t   ak8jet0_tau21;
+  Double_t   ak8jet0_m;
+  Double_t   ak8jet0_mpruned;
+  Double_t   ak8jet0_csv;
+  Double_t   ak8jet1_pt;
+  Double_t   ak8jet1_phi;
+  Double_t   ak8jet1_eta;
+  Double_t   ak8jet1_e;
+  Double_t   ak8jet1_tau21;
+  Double_t   ak8jet1_m;
+  Double_t   ak8jet1_mpruned;
+  Double_t   ak8jet1_csv;
+  Double_t   ak8jet0_subjet01_dr;
+  Double_t   ak8jet0_subjet01_deta;
+  Double_t   ak8jet0_subjet01_dphi;
+  Double_t   ak8jet0_subjet0_pt;
+  Double_t   ak8jet0_subjet1_pt;
+  Double_t   ak8jet0_subjet0_csv;
+  Double_t   ak8jet0_subjet1_csv;
+  Double_t   ak8jet1_subjet01_dr;
+  Double_t   ak8jet1_subjet01_deta;
+  Double_t   ak8jet1_subjet01_dphi;
+  Double_t   ak8jet1_subjet0_pt;
+  Double_t   ak8jet1_subjet1_pt;
+  Double_t   ak8jet1_subjet0_csv;
+  Double_t   ak8jet1_subjet1_csv;
+
+  Double_t tau_pt;
+  Double_t tau_eta;
+  Double_t tau_phi;
+  Double_t seclepton_pt;
+  Double_t seclepton_eta;
+  Double_t seclepton_phi;
+  Double_t met;
+  Double_t met_phi;
+  Double_t HT;
+
+
+  bool isBoostedTau;
+
+  std::vector<Int_t>      branch_selection_bits;
+  std::vector<Int_t>      branch_selection_lastcut;
+
+
+
 
    // Macro adding the functions for dictionary generation
    ClassDef( VHTausAnalysis, 0 );

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+<JobConfiguration JobName="VHTausAnalysisJob" OutputLevel="INFO">
+  <Library Name="libNtupleVariables" />
+  <Library Name="libGoodRunsLists" />
+  <Library Name="libPileupReweightingTool" />
+  <Library Name="libBTaggingTools" />
+  <Library Name="libVHTausResonances" />
+  <Library Name="libSVFit"/>
+
+
+  <Package Name="SFrameCore.par" />
+  <Package Name="NtupleVariables.par" />
+  <Package Name="GoodRunsLists.par" />
+  <Package Name="PileupReweightingTool.par" />
+  <Package Name="BTaggingTools.par" />
+  <Package Name="VHTausResonances.par" />
+  <Package Name="SVFit.par" />
+
+
+	<Cycle Name="VHTausAnalysis" OutputDirectory="./" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
+    <InputData Lumi="0.0" NEventsMax="100" Type="HHtautauqq" Version="100" SkipValid="True">
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_1.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_2.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_3.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_4.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_5.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_6.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_7.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_8.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_9.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_10.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_11.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_12.root" Lumi="1.0"/>
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/cgalloni/RunII/Ntuple_080316/RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph/BoostedTaus_ntuple_RadionTohhTohtatahbb_narrow_M-1000_13TeV-madgraph_v6/flatTuple_13.root" Lumi="1.0"/>     
+  <InputTree Name="ntuplizer/tree" />
+			<OutputTree Name="analysis" />
+			<OutputTree Name="tree_mutau" />
+			<OutputTree Name="tree_eletau" />
+			<OutputTree Name="tree_tautau" />
+		</InputData>
+		<UserConfig>
+			<Item Name="RecoTreeName" Value="tree"/>
+			<Item Name="OutputTreeName_eletau"    Value="tree_eletau"/>
+			<Item Name="OutputTreeName_mutau"     Value="tree_mutau"/>
+   			<Item Name="OutputTreeName_tautau"    Value="tree_tautau"/> 
+      <Item Name="JetPtCut" Value="200."/>
+      <Item Name="IsSignal" Value="True"/>
+		</UserConfig>
+	</Cycle>
+</JobConfiguration>
