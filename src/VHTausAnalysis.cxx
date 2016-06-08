@@ -696,7 +696,7 @@ void VHTausAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   m_bTaggingScaleTool.BeginInputData( id );
   if (m_isSignal) {
     // b-tagging efficiencies
-    m_bTaggingScaleTool.bookHistograms();
+     m_bTaggingScaleTool.bookHistograms();
   }
   
  
@@ -734,13 +734,13 @@ void VHTausAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
   m_logger << INFO << "Connecting input variables" << SLogger::endmsg;
   if (m_isData) {
     m_jetAK4.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis, (m_jetAK4Name + "_").c_str() );
-    m_jetAK8.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetSubstructure|Ntuple::JetPrunedSubjets, (m_jetAK8Name + "_").c_str() );
+    m_jetAK8.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetSubstructure|Ntuple::JetSoftdropSubjets, (m_jetAK8Name + "_").c_str() );
     m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), // Ntuple::EventInfoBasic|
 				     Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters, "" );
   }
   else {
     m_jetAK4.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetTruth, (m_jetAK4Name + "_").c_str() );
-    m_jetAK8.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetSubstructure|Ntuple::JetTruth|Ntuple::JetPrunedSubjets|Ntuple::JetPrunedSubjetsTruth, (m_jetAK8Name + "_").c_str() );
+    m_jetAK8.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetSubstructure|Ntuple::JetTruth|Ntuple::JetSoftdropSubjets|Ntuple::JetSoftdropSubjetsTruth, (m_jetAK8Name + "_").c_str() );
     m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth, "" );
     m_genParticle.ConnectVariables(  m_recoTreeName.c_str(), Ntuple::GenParticleBasic, (m_genParticleName + "_").c_str() );
   }
@@ -865,17 +865,17 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
             b_ak8jet0_m = myjet.m();
             b_ak8jet0_mpruned = myjet.pruned_massCorr();
             b_ak8jet0_csv = myjet.csv();
-            if (myjet.subjet_pruned_N() >= 2) {
-              double deta = fabs(myjet.subjet_pruned_eta()[0] - myjet.subjet_pruned_eta()[1]);
-              double dphi = fabs(myjet.subjet_pruned_phi()[0] - myjet.subjet_pruned_phi()[1]);
+            if (myjet.subjet_softdrop_N() >= 2) {
+              double deta = fabs(myjet.subjet_softdrop_eta()[0] - myjet.subjet_softdrop_eta()[1]);
+              double dphi = fabs(myjet.subjet_softdrop_phi()[0] - myjet.subjet_softdrop_phi()[1]);
               double dr = sqrt(deta*deta + dphi*dphi);
               b_ak8jet0_subjet01_dr = dr;
               b_ak8jet0_subjet01_deta = deta;
               b_ak8jet0_subjet01_dphi = dphi;
-              b_ak8jet0_subjet0_pt = myjet.subjet_pruned_pt()[0];
-              b_ak8jet0_subjet1_pt = myjet.subjet_pruned_pt()[1];
-              b_ak8jet0_subjet0_csv = myjet.subjet_pruned_csv()[0];
-              b_ak8jet0_subjet1_csv = myjet.subjet_pruned_csv()[1];
+              b_ak8jet0_subjet0_pt = myjet.subjet_softdrop_pt()[0];
+              b_ak8jet0_subjet1_pt = myjet.subjet_softdrop_pt()[1];
+              b_ak8jet0_subjet0_csv = myjet.subjet_softdrop_csv()[0];
+              b_ak8jet0_subjet1_csv = myjet.subjet_softdrop_csv()[1];
             }
           }
           else if (goodFatJets.size() == 2) {
@@ -891,17 +891,17 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
             b_ak8jet1_m = myjet.m();
             b_ak8jet1_mpruned = myjet.pruned_massCorr();
             b_ak8jet1_csv = myjet.csv();
-            if (myjet.subjet_pruned_N() >= 2) {
-              double deta = fabs(myjet.subjet_pruned_eta()[0] - myjet.subjet_pruned_eta()[1]);
-              double dphi = fabs(myjet.subjet_pruned_phi()[0] - myjet.subjet_pruned_phi()[1]);
+            if (myjet.subjet_softdrop_N() >= 2) {
+              double deta = fabs(myjet.subjet_softdrop_eta()[0] - myjet.subjet_softdrop_eta()[1]);
+              double dphi = fabs(myjet.subjet_softdrop_phi()[0] - myjet.subjet_softdrop_phi()[1]);
               double dr = sqrt(deta*deta + dphi*dphi);
               b_ak8jet1_subjet01_dr = dr;
               b_ak8jet1_subjet01_deta = deta;
               b_ak8jet1_subjet01_dphi = dphi;
-              b_ak8jet1_subjet0_pt = myjet.subjet_pruned_pt()[0];
-              b_ak8jet1_subjet1_pt = myjet.subjet_pruned_pt()[1];
-              b_ak8jet1_subjet0_csv = myjet.subjet_pruned_csv()[0];
-              b_ak8jet1_subjet1_csv = myjet.subjet_pruned_csv()[1];
+              b_ak8jet1_subjet0_pt = myjet.subjet_softdrop_pt()[0];
+              b_ak8jet1_subjet1_pt = myjet.subjet_softdrop_pt()[1];
+              b_ak8jet1_subjet0_csv = myjet.subjet_softdrop_csv()[0];
+              b_ak8jet1_subjet1_csv = myjet.subjet_softdrop_csv()[1];
             }
           }
         }
@@ -932,95 +932,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   UZH::Jet Jet;
   m_logger << VERBOSE << "kFatJetsDeltaEta" << SLogger::endmsg;
   
-  // if (moveOn) { // need to have selected the One candidate jet
-    
-  //   moveOn = false;
-  
-  //   m_logger << VERBOSE << "kDijetMass" << SLogger::endmsg;
 
-  //   // Cut 7: require one of the jets to be in the V-boson mass window
-  //   // make other selected jet the Higgs jet
-    
-  //   // for (unsigned int i = 0; i < goodFatJets.size(); ++i) {
-  //   moveOn=false;
-      
-  //   if ((goodFatJets[0].pruned_massCorr() > m_mWLowerCut) && (goodFatJets[0].pruned_massCorr() <= m_mZUpperCut)) {
-  //     Jet = goodFatJets[0];foundJet=true;
-  //     goodFatJet1Index=0;
-  //     moveOn = true;
-  //   }
-      
-  //   if (moveOn) {
-  //     for (unsigned int s=0;s<m_catNames.size();++s) {
-  // 	if (m_catNames[s].find("VWindow") != std::string::npos) {
-  // 	  selectionBits[s].SetBitNumber( kMassWindow );
-  // 	}
-  // 	if ((m_catNames[s].find("WWindow") != std::string::npos) && (goodFatJets[0].pruned_massCorr() <= m_mWUpperCut)) {
-  // 	  selectionBits[s].SetBitNumber( kMassWindow );
-  // 	}
-  // 	if ((m_catNames[s].find("ZWindow") != std::string::npos) && (goodFatJets[0].pruned_massCorr() > m_mZLowerCut)) {
-  // 	  selectionBits[s].SetBitNumber( kMassWindow );
-  // 	}
-  //     }
-  //   }
-  //   else { // this means we're not in the V region of the pruned mass
-
-  //     if ((goodFatJets[0].pruned_massCorr() > m_mVLowSidebandCut) && (goodFatJets[0].pruned_massCorr() <= m_mWLowerCut)) {
-  // 	goodFatJet1Index=0;
-  // 	Jet = goodFatJets[goodFatJet1Index];foundJet=true;
-        
-  // 	moveOn = true;
-  //     }
-      
-  //     if (moveOn) {
-  // 	for (unsigned int s=0;s<m_catNames.size();++s) {
-  // 	  if (m_catNames[s].find("VLowSB") != std::string::npos) {
-  // 	    selectionBits[s].SetBitNumber( kMassWindow );
-  // 	  }
-  // 	}      
-  //     }
-	
-    
-  //   //  }// moveOn after having selected two candidate jets
-     
-  //   if (moveOn) { // move on only if V or Vlow sideband
-
-  //     if (m_isSignal) {
-  // 	std::vector<UZH::Jet> selectedJets;
-  // 	selectedJets.push_back(Jet);
-  // 	m_bTaggingScaleTool.fillEfficiencies(selectedJets);
-  // 	m_bTaggingScaleTool.fillPrunedSubjetEfficiencies(selectedJets);
-  //     }
-  //   }
-     
-  //   m_logger << VERBOSE << "kMassWindow" << SLogger::endmsg;
-    
-
-
-  //   // Cut 8: check if Higgs candidate jet is in Higgs mass window
-  //   if ((goodFatJets[0].pruned_massCorr() > m_mHLowerCut) && (goodFatJets[0].pruned_massCorr() <= m_mHUpperCut)) {
-  //     //std::cout << "higgsJet mass SR "<<goodFatJets[0].pruned_massCorr()<<  std::endl;
-  //     for (unsigned int s=0;s<m_catNames.size();++s) {
-  // 	if (m_catNames[s].find("HWindow") != std::string::npos) { // HWindow category
-  // 	  selectionBits[s].SetBitNumber( kMassWindow );
-  // 	}
-  //     }
-  //     goodFatJet1Index=0;
-  //     Jet = goodFatJets[goodFatJet1Index];foundJet=true;
-  //     moveOn = true;
-  //   }
-  //   else if (goodFatJets[0].pruned_massCorr() > m_mHUpperCut ){
-
-  //     for (unsigned int s=0;s<m_catNames.size();++s) {
-  // 	if (m_catNames[s].find("HHighSB") != std::string::npos) { // HHighSB category
-  // 	  selectionBits[s].SetBitNumber( kMassWindow );
-  // 	}
-  //     }
-  //     goodFatJet1Index=0;
-  //     Jet = goodFatJets[goodFatJet1Index];foundJet=true;
-  //     moveOn = true;
-  //   }
-  //  if (moveOn) break; 
   
   if(goodFatJets.size() >0)	 {
     Jet = goodFatJets[0];
@@ -1029,7 +941,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       std::vector<UZH::Jet> selectedJets;
       selectedJets.push_back(Jet);
       m_bTaggingScaleTool.fillEfficiencies(selectedJets);
-      m_bTaggingScaleTool.fillPrunedSubjetEfficiencies(selectedJets);
+      m_bTaggingScaleTool.fillSoftdropSubjetEfficiencies(selectedJets);
     }
     // std::cout << " goodFatJets pt " << goodFatJets[0].pt()<< " ;goodFatJets[0].pruned_massCorr() " <<  goodFatJets[0].pruned_massCorr() << " ; eta " << goodFatJets[0].eta() <<" ; phi "<<  goodFatJets[0].phi() << std::endl;
     foundJet=true;
@@ -1087,8 +999,8 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     // Cut 11: require two subjets from the Higgs jet to be b-tagged
     // count number of b-tagged subjets
     int nTaggedSubjets = 0;
-    for (int i = 0; i < Jet.subjet_pruned_N(); ++i) {
-      if (m_bTaggingScaleTool.isTagged(Jet.subjet_pruned_csv()[i])) {
+    for (int i = 0; i < Jet.subjet_softdrop_N(); ++i) {
+      if (m_bTaggingScaleTool.isTagged(Jet.subjet_softdrop_csv()[i])) {
 	++nTaggedSubjets;
       }
     }
@@ -1134,7 +1046,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       selectedJets.push_back(Jet);
     
       // b_weightBtag = m_bTaggingScaleTool.getScaleFactor(selectedJets); // event b-tag SF weight
-      b_weightBtag = m_bTaggingScaleTool.getPrunedSubjetScaleFactor(selectedJets); // event b-tag SF weight
+      b_weightBtag = m_bTaggingScaleTool.getSoftdropSubjetScaleFactor(selectedJets); // event b-tag SF weight
       
       b_weight *= b_weightBtag;
     }
@@ -1175,7 +1087,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       if (fabs(mytau.eta()) < m_tauEtaCut){
 
 	// std::cout<<" mytau.pt() " << mytau.pt() <<" mytau.eta() " << mytau.eta() <<" mytau.TauType() " <<  mytau.TauType() <<std::endl;
-	if( mytau.byVLooseIsolationMVA3newDMwLT()>0.5   // && mytau.againstElectronVLooseMVA5()>0.5
+	if( mytau.byVLooseIsolationMVArun2v1PWnewDMwLT()>0.5   // && mytau.againstElectronVLooseMVA6>0.5
 	    ){
 	  // std::cout<<" mytau.pt() " << mytau.pt() <<" mytau.eta() " << mytau.eta() <<" mytau.TauType() " <<  mytau.TauType() <<std::endl;
 	  goodTaus.push_back(mytau);
@@ -1193,7 +1105,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       if (fabs(mytau.eta()) < m_tauEtaCut){
 	
 	// std::cout<<" mytau.pt() " << mytau.pt() <<" mytau.eta() " << mytau.eta() <<" mytau.TauType() " <<  mytau.TauType() <<std::endl;
-	if( mytau.byVLooseIsolationMVA3newDMwLT()>0.5   // && mytau.againstElectronVLooseMVA5()>0.5
+	if( mytau.byVLooseIsolationMVArun2v1PWnewDMwLT()>0.5   // && mytau.againstElectronVLooseMVA5()>0.5
 	    ){
 	  // std::cout<<" mytau.pt() " << mytau.pt() <<" mytau.eta() " << mytau.eta() <<" mytau.TauType() " <<  mytau.TauType() <<std::endl;
 	  goodTaus.push_back(mytau);
@@ -1247,7 +1159,7 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     UZH::Jet myjetak4( &m_jetAK4, i );
     if (fabs(myjetak4.eta()) < m_AK4jetEtaCut) {
       if (myjetak4.pt() > m_AK4jetPtCut) {
-	goodJetsAK4.push_back(myjetak4);
+
 
 	HT = HT + myjetak4.tlv().Et();
 	// m_logger << INFO << myjetak4.pt() << SLogger::endmsg;
@@ -1265,17 +1177,18 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 	Book( TH1F( "Jet_area", "Jet area", 40, 0.0, 4.0 ), "AK4_low" )->Fill( myjetak4.area() );
 	Book( TH1F( "Jet_cm", "Jet cm", 50, 0.0, 50.0 ), "AK4_low" )->Fill( myjetak4.cm() );
 	Book( TH1F( "Jet_nm", "Jet nm", 50, 0.0, 50.0 ), "AK4_low" )->Fill( myjetak4.nm() );
-
-
-	if ( myjetak4.csv() >  0.605 ) taggedAK4_L++;
-    	if ( myjetak4.csv() >  0.89 ) taggedAK4_M++;
-      	if ( myjetak4.csv() >  0.97 ) taggedAK4_T++;
+	if (myjetak4.IDTight()){
+	  goodJetsAK4.push_back(myjetak4);
+	  if ( myjetak4.csv() >  0.605 ) taggedAK4_L++;
+	  if ( myjetak4.csv() >  0.89 ) taggedAK4_M++;
+	  if ( myjetak4.csv() >  0.97 ) taggedAK4_T++;
+	}
       }
     }
   }
   if (goodJetsAK4.size()>0){
      if (m_isSignal) {
-       m_bTaggingScaleTool.fillEfficiencies_veto(goodJetsAK4);
+         m_bTaggingScaleTool.fillEfficiencies_veto(goodJetsAK4);
      }    
      
     if (!m_isData) {
@@ -1430,22 +1343,22 @@ void VHTausAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     double ak8jet0_subjet01_dphi=-99;
     double ak8jet0_subjet01_dr = -99;
     
-    if (Jet.subjet_pruned_N() >= 2) {
-      ak8jet0_subjet01_deta = fabs(Jet.subjet_pruned_eta()[0] - Jet.subjet_pruned_eta()[1]);
-      ak8jet0_subjet01_dphi = fabs(Jet.subjet_pruned_phi()[0] - Jet.subjet_pruned_phi()[1]);
+    if (Jet.subjet_softdrop_N() >= 2) {
+      ak8jet0_subjet01_deta = fabs(Jet.subjet_softdrop_eta()[0] - Jet.subjet_softdrop_eta()[1]);
+      ak8jet0_subjet01_dphi = fabs(Jet.subjet_softdrop_phi()[0] - Jet.subjet_softdrop_phi()[1]);
       ak8jet0_subjet01_dr = sqrt(ak8jet0_subjet01_deta*ak8jet0_subjet01_deta + ak8jet0_subjet01_dphi*ak8jet0_subjet01_dphi);
     }
-    for (int i = 0; i < Jet.subjet_pruned_N(); ++i) {
+    for (int i = 0; i < Jet.subjet_softdrop_N(); ++i) {
       switch(i) {
       case 0:
-	vJet_subjet0_csv = Jet.subjet_pruned_csv()[i];
+	vJet_subjet0_csv = Jet.subjet_softdrop_csv()[i];
 	break;
       case 1:
-	vJet_subjet1_csv = Jet.subjet_pruned_csv()[i];
+	vJet_subjet1_csv = Jet.subjet_softdrop_csv()[i];
 	break;
       }
       
-      if ((m_bTaggingScaleTool.isTagged(Jet.subjet_pruned_csv()[i]))) {
+      if ((m_bTaggingScaleTool.isTagged(Jet.subjet_softdrop_csv()[i]))) {
         ++vJet_nTaggedSubjets;
       }
     }
@@ -1978,7 +1891,7 @@ void VHTausAnalysis::bookHistograms( const TString& directory ) {
   Book( TH1F( "vjet_eta", "Vjet #eta;Vjet #eta", 50, -2.5, 2.5 ), directory ); 
   Book( TH1F( "vjet_phi", "Vjet #phi;Vjet #phi", 50, -3.15, 3.15 ), directory ); 
   Book( TH1F( "vjet_m", "Vjet m;Vjet m [GeV]", 40, 0, 200 ), directory ); 
-  Book( TH1F( "vjet_mpruned", "Vjet pruned m;Vjet pruned m [GeV]", 40, 0, 200 ), directory ); 
+  Book( TH1F( "vjet_mpruned", "Vjet softdrop m;Vjet softdrop m [GeV]", 40, 0, 200 ), directory ); 
   Book( TH1F( "vjet_tau1", "Vjet #tau_{1};Vjet #tau_{1}", 50, 0, 1 ), directory ); 
   Book( TH1F( "vjet_tau2", "Vjet #tau_{2};Vjet #tau_{2}", 50, 0, 1 ), directory ); 
   Book( TH1F( "vjet_tau3", "Vjet #tau_{3};Vjet #tau_{3}", 50, 0, 1 ), directory ); 
@@ -1994,7 +1907,7 @@ void VHTausAnalysis::bookHistograms( const TString& directory ) {
   Book( TH1F( "hjet_eta", "Hjet #eta;Hjet #eta", 50, -2.5, 2.5 ), directory ); 
   Book( TH1F( "hjet_phi", "Hjet #phi;Hjet #phi", 50, -3.15, 3.15 ), directory ); 
   Book( TH1F( "hjet_m", "Hjet m;Hjet m [GeV]", 40, 0, 200 ), directory ); 
-  Book( TH1F( "hjet_mpruned", "Hjet pruned m;Hjet pruned m [GeV]", 40, 0, 200 ), directory ); 
+  Book( TH1F( "hjet_mpruned", "Hjet softdrop m;Hjet softdrop m [GeV]", 40, 0, 200 ), directory ); 
   Book( TH1F( "hjet_tau1", "Hjet #tau_{1};Hjet #tau_{1}", 50, 0, 1 ), directory ); 
   Book( TH1F( "hjet_tau2", "Hjet #tau_{2};Hjet #tau_{2}", 50, 0, 1 ), directory ); 
   Book( TH1F( "hjet_tau3", "Hjet #tau_{3};Hjet #tau_{3}", 50, 0, 1 ), directory ); 
@@ -2034,7 +1947,7 @@ void VHTausAnalysis::fillHistograms( const TString& directory, const UZH::Jet& v
   Hist( "vjet_tau21", directory )->Fill( vJet_tau21 , b_weight);
   Hist( "vjet_tau31", directory )->Fill( vJet_tau31 , b_weight);
   Hist( "vjet_tau32", directory )->Fill( vJet_tau32 , b_weight);
-  Hist( "vjet_nSubjets", directory )->Fill( vectorJet.subjet_pruned_N() , b_weight);
+  Hist( "vjet_nSubjets", directory )->Fill( vectorJet.subjet_softdrop_N() , b_weight);
   Hist( "vjet_nTaggedSubjets", directory )->Fill( vJet_nTaggedSubjets , b_weight);
   Hist( "vjet_subjet0_csv", directory )->Fill( vJet_subjet0_csv , b_weight);
   Hist( "vjet_subjet1_csv", directory )->Fill( vJet_subjet1_csv , b_weight);
@@ -2050,7 +1963,7 @@ void VHTausAnalysis::fillHistograms( const TString& directory, const UZH::Jet& v
   Hist( "hjet_tau21", directory )->Fill( hJet_tau21 , b_weight);
   Hist( "hjet_tau31", directory )->Fill( hJet_tau31 , b_weight);
   Hist( "hjet_tau32", directory )->Fill( hJet_tau32 , b_weight);
-  Hist( "hjet_nSubjets", directory )->Fill( higgsJet.subjet_pruned_N() , b_weight);
+  Hist( "hjet_nSubjets", directory )->Fill( higgsJet.subjet_softdrop_N() , b_weight);
   Hist( "hjet_nTaggedSubjets", directory )->Fill( hJet_nTaggedSubjets , b_weight);
   Hist( "hjet_subjet0_csv", directory )->Fill( hJet_subjet0_csv , b_weight);
   Hist( "hjet_subjet1_csv", directory )->Fill( hJet_subjet1_csv , b_weight);
@@ -2335,10 +2248,10 @@ void VHTausAnalysis::checkTriggerOfflineSelection(const TString& directory,  con
   if  (HT >400 && met.et() > 70 && Jet.pt()>300 && Jet.pruned_massCorr()>40)  Hist( "Trigger_Attempts"  , directory 	)->Fill(3);//"HLT_HT350_MET50_AK8PFJet200_TrimMass30_v1");
 
 
-  if  (HT >250 && met.et() > 70 && Jet.pt()>180 && Jet.pruned_massCorr()>30 && tau.pt()>70 && tau.byLooseIsolationMVA3newDMwLT() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(4);//"HLT_HT200_MET50_AK8PFJet120_TrimMass20_LooseIsoPFTau50_Trk30_v1");
-  if  (HT >450 && met.et() > 70 && tau.pt()>70 && tau.byLooseIsolationMVA3newDMwLT() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(5);//"HLT_HT400_LooseIsoPFtau50_Trk30_v1");
-  if  (HT >500 && met.et() > 70 && tau.pt()>70 && tau.byLooseIsolationMVA3newDMwLT() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(6);//"HLT_HT450_LooseIsoPFTau50_Trk30_v1");
-  if  (HT >500 && met.et() > 70 && tau.pt()>50 && tau.byLooseIsolationMVA3newDMwLT() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(7);//"HLT_HT450_LooseIsoPFTau30_Trk30_v1");
+  if  (HT >250 && met.et() > 70 && Jet.pt()>180 && Jet.pruned_massCorr()>30 && tau.pt()>70 && tau.byLooseCombinedIsolationDeltaBetaCorr3Hits() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(4);//"HLT_HT200_MET50_AK8PFJet120_TrimMass20_LooseIsoPFTau50_Trk30_v1");
+  if  (HT >450 && met.et() > 70 && tau.pt()>70 && tau.byLooseCombinedIsolationDeltaBetaCorr3Hits() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(5);//"HLT_HT400_LooseIsoPFtau50_Trk30_v1");
+  if  (HT >500 && met.et() > 70 && tau.pt()>70 && tau.byLooseCombinedIsolationDeltaBetaCorr3Hits() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(6);//"HLT_HT450_LooseIsoPFTau50_Trk30_v1");
+  if  (HT >500 && met.et() > 70 && tau.pt()>50 && tau.byLooseCombinedIsolationDeltaBetaCorr3Hits() >0.5)  Hist( "Trigger_Attempts"  , directory 	)->Fill(7);//"HLT_HT450_LooseIsoPFTau30_Trk30_v1");
 
   if  (HT >250 && met.et() > 70 && Jet.pt()>180 && Jet.pruned_massCorr()>30 && tau.pt()>70)  Hist( "Trigger_Attempts"  , directory 	)->Fill(8);//"HLT_HT200_MET50_AK8PFJet120_TrimMass20_NotIsoPFTau50_Trk30_v1");
   if  (HT >350 && met.et() > 70 && Jet.pt()>180 && Jet.pruned_massCorr()>30 && tau.pt()>70)  Hist( "Trigger_Attempts"  , directory 	)->Fill(9);//"HLT_HT300_MET50_AK8PFJet120_TrimMass20_NotIsoPFTau50_Trk30_v1");
@@ -2399,9 +2312,9 @@ void VHTausAnalysis::FillBranches( const std::string& channel,  const UZH::Jet& 
   b_tau_pt_[channel.c_str()]=tau.tlv().Pt();
   b_tau_eta_[channel.c_str()]=tau.tlv().Eta();
   b_tau_phi_[channel.c_str()]=tau.tlv().Phi();
-  b_tauIsoRaw_[channel.c_str()]=tau.byIsolationMVA3newDMwLTraw();
-  b_tauIso_[channel.c_str()]=tau.byVLooseIsolationMVA3newDMwLT();
-  b_tau_againstEle_[channel.c_str()]=tau.againstElectronVLooseMVA5();
+  b_tauIsoRaw_[channel.c_str()]=tau.byIsolationMVArun2v1PWnewDMwLTraw();
+  b_tauIso_[channel.c_str()]=tau.byVLooseIsolationMVArun2v1PWnewDMwLT();
+  b_tau_againstEle_[channel.c_str()]=tau.againstElectronVLooseMVA6();
   b_tau_againstMu_[channel.c_str()]=tau.againstMuonLoose3();
 
   b_seclepton_pt_[channel.c_str()]=lepton.Pt();
@@ -2788,14 +2701,14 @@ void VHTausAnalysis::checkTriggerTurnOn(){
   Book( TH1F( "HLT_PFHT650_pt","HLT_PFHT650_pt", 2000 , 0, 4000), "Trigger_eff") ;
   Book( TH1F( "HLT_PFJet320_pt","HLT_PFJet320_pt", 2000 , 0, 4000), "Trigger_eff") ;
 
-  Book( TH1F( "HLT_AK8PFJet360_TrimMass30_prunedMass","HLT_AK8PFJet360_TrimMass30_prunedMass", 200 , 0, 400 ), "Trigger_eff") ;
-  Book( TH1F( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_prunedMass","HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_prunedMass", 200 , 0, 400 ), "Trigger_eff") ;
-  Book( TH1F( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_prunedMass","HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_prunedMass" , 200 , 0, 400 ), "Trigger_eff");
-  Book( TH1F( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_prunedMass","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_prunedMass", 200 , 0, 400), "Trigger_eff") ;
-  Book( TH1F( "HLT_PFHT800_prunedMass","HLT_PFHT800_prunedMass", 200 , 0, 400), "Trigger_eff") ;
-  Book( TH1F( "HLT_PFHT900_prunedMass","HLT_PFHT900_prunedMass", 200 , 0, 400), "Trigger_eff") ;
-  Book( TH1F( "HLT_PFHT650_prunedMass","HLT_PFHT650_prunedMass", 200 , 0, 400), "Trigger_eff") ;
-  Book( TH1F( "HLT_PFJet320_prunedMass","HLT_PFJet320_prunedMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_AK8PFJet360_TrimMass30_softdropMass","HLT_AK8PFJet360_TrimMass30_softdropMass", 200 , 0, 400 ), "Trigger_eff") ;
+  Book( TH1F( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_softdropMass","HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_softdropMass", 200 , 0, 400 ), "Trigger_eff") ;
+  Book( TH1F( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_softdropMass","HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_softdropMass" , 200 , 0, 400 ), "Trigger_eff");
+  Book( TH1F( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_softdropMass","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_softdropMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_PFHT800_softdropMass","HLT_PFHT800_softdropMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_PFHT900_softdropMass","HLT_PFHT900_softdropMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_PFHT650_softdropMass","HLT_PFHT650_softdropMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_PFJet320_softdropMass","HLT_PFJet320_softdropMass", 200 , 0, 400), "Trigger_eff") ;
 
   Book( TH1F( "HLT_AK8PFJet360_TrimMass30_ht","HLT_AK8PFJet360_TrimMass30_ht", 2000 , 0, 4000 ), "Trigger_eff") ;
   Book( TH1F( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_ht","HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_ht", 2000 , 0, 4000 ), "Trigger_eff") ;
@@ -2808,11 +2721,11 @@ void VHTausAnalysis::checkTriggerTurnOn(){
  
   Book( TH1F( "HLT_OR_pt","HLT_OR_pt", 2000 , 0, 4000), "Trigger_eff") ;
   Book( TH1F( "HLT_OR_ht","HLT_OR_ht", 2000 , 0, 4000), "Trigger_eff") ;
-  Book( TH1F( "HLT_OR_prunedMass","HLT_OR_prunedMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_OR_softdropMass","HLT_OR_softdropMass", 200 , 0, 400), "Trigger_eff") ;
   
   Book( TH1F( "HLT_PreOR_pt","HLT_PreOR_pt", 2000 , 0, 4000), "Trigger_eff") ;
   Book( TH1F( "HLT_PreOR_ht","HLT_PreOR_ht", 2000 , 0, 4000), "Trigger_eff") ;
-  Book( TH1F( "HLT_PreOR_prunedMass","HLT_PreOR_prunedMass", 200 , 0, 400), "Trigger_eff") ;
+  Book( TH1F( "HLT_PreOR_softdropMass","HLT_PreOR_softdropMass", 200 , 0, 400), "Trigger_eff") ;
 
   std::vector<UZH::Jet> goodFatJets_trig;
   for ( int i = 0; i < (m_jetAK8.N); ++i ) {
@@ -2849,7 +2762,7 @@ void VHTausAnalysis::checkTriggerTurnOn(){
     if( (it->first).find("HLT_PFHT650_v") != std::string::npos  && it->second ){  
       if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50 )   Hist( "HLT_PFHT650_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
       Hist( "HLT_PFHT650_ht", "Trigger_eff")->Fill(HT); 
-      if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500  )  Hist( "HLT_PFHT650_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+      if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500  )  Hist( "HLT_PFHT650_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
       looseTrigHT=true;
       break; 
     }
@@ -2861,7 +2774,7 @@ void VHTausAnalysis::checkTriggerTurnOn(){
     if( (it->first).find("HLT_PFJet320_v") != std::string::npos  && it->second ){  
       if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)   Hist( "HLT_PFJet320_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
       Hist( "HLT_PFJet320_ht", "Trigger_eff")->Fill(HT); 
-      if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_PFJet320_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+      if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_PFJet320_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
       looseTrigJet=true;
       break;
     }
@@ -2873,7 +2786,7 @@ void VHTausAnalysis::checkTriggerTurnOn(){
   if (looseTrigJet || looseTrigHT){
     if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)   Hist( "HLT_PreOR_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
     Hist( "HLT_PreOR_ht", "Trigger_eff")->Fill(HT); 
-    if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_PreOR_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+    if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_PreOR_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
   }
 
   if (  looseTrigJet){
@@ -2882,7 +2795,7 @@ void VHTausAnalysis::checkTriggerTurnOn(){
       if( (it->first).find("HLT_AK8PFJet360_TrimMass30_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50 )	Hist( "HLT_AK8PFJet360_TrimMass30_pt", "Trigger_eff")->Fill(Jet_trig.pt());
 	Hist( "HLT_AK8PFJet360_TrimMass30_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)   Hist( "HLT_AK8PFJet360_TrimMass30_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)   Hist( "HLT_AK8PFJet360_TrimMass30_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
       }
     } 
   }
@@ -2896,27 +2809,27 @@ void VHTausAnalysis::checkTriggerTurnOn(){
       if ( (it->first).find("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)	Hist( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_pt", "Trigger_eff")->Fill(Jet_trig.pt());
 	Hist( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()); 
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()); 
       }
       if ( (it->first).find("HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)	Hist( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
 	Hist( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
       }
       if ( (it->first).find("HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)	Hist( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
 	Hist( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
       }
       if ( (it->first).find("HLT_PFHT800_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)	Hist( "HLT_PFHT800_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
 	Hist( "HLT_PFHT800_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT800_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()); 
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT800_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()); 
       }
       if ( (it->first).find("HLT_PFHT900_v") != std::string::npos  &&  it->second){  
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)	Hist( "HLT_PFHT900_pt", "Trigger_eff")->Fill(Jet_trig.pt());
 	Hist( "HLT_PFHT900_ht", "Trigger_eff")->Fill(HT);
-	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT900_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr());
+	if(goodFatJets_trig.size()>=1 && Jet_trig.pt()> 500)	Hist( "HLT_PFHT900_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr());
       }
     }
   }
@@ -2929,7 +2842,7 @@ void VHTausAnalysis::checkTriggerTurnOn(){
       
 	if(goodFatJets_trig.size()>=1 && Jet_trig.pruned_massCorr()>50)   Hist( "HLT_OR_pt", "Trigger_eff")->Fill(Jet_trig.pt()); 
 	Hist( "HLT_OR_ht", "Trigger_eff")->Fill(HT); 
-	if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_OR_prunedMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
+	if(goodFatJets_trig.size()>=1  && Jet_trig.pt()> 500)  Hist( "HLT_OR_softdropMass", "Trigger_eff")->Fill(Jet_trig.pruned_massCorr()) ;
 	break;
       }
 
